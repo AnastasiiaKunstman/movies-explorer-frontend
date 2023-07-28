@@ -1,0 +1,30 @@
+.show-more {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.show-more__hide {
+    display: none;
+}
+
+.show-more__btn {
+    width: 320px;
+    padding: 11px 60px 9px;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 15px;
+    text-align: center;
+    color: #000;
+    border-radius: 6px;
+    border: 1px solid #F9F9F9;
+    background-color: #F9F9F9;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 480px) {
+    .show-more__btn {
+        width: 240px;
+        padding: 11px 20px 9px;
+    }
+}
