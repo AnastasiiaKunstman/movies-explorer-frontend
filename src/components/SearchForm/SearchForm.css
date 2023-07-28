@@ -1,5 +1,5 @@
 .search {
-    padding: 70px 0 0;
+    padding: 0;
 }
 
 .search__form {
@@ -44,6 +44,11 @@
     border: none;
     outline: none;
     color: #A0A0A0;
+    cursor: pointer;
+}
+
+.search__input:focus::placeholder {
+    color: transparent;
 }
 
 .search__input::placeholder {

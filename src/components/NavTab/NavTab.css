@@ -68,15 +68,14 @@
     font-weight: 500;
     font-size: 14px;
     line-height: 16px;
-    border-radius: 50px;
-    border: 2px solid #AAA;
     text-decoration: none;
     color: #000;
+    border-radius: 50px;
+    border: 2px solid rgba(170, 170, 170, .2);
 }
 
 .nav-movies__account-btn:hover {
     cursor: pointer;
-    opacity: 0.2;
 }
 
 .nav-movies__burger-btn {
