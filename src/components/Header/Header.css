@@ -1,0 +1,28 @@
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 21px 70px;
+}
+
+.header_landing {
+    background-color: #073042;
+}
+
+.header__logo {
+    height: 38px;
+    width: 38px;
+    margin-right: 44px;
+}
+
+@media screen and (max-width: 768px) {
+    .header {
+        padding: 18px 30px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .header {
+        padding: 18px 14px;
+    }
+}
