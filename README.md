@@ -2,8 +2,7 @@
 
 Frontend дипломного проекта - cервиса, в котором можно найти фильмы по запросу и сохранить их в личном кабинете.
 
-
-Ссылка на pull-requests #2:
+Ссылка на pull-requests #2: https://github.com/AnastasiiaKunstman/movies-explorer-frontend/pull/2
 
 ## Ссылки на проект
 IP 158.160.50.130
