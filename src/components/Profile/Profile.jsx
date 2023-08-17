@@ -1,82 +1,123 @@
-import { React, useState } from 'react';
 import './Profile.css';
 import Header from '../Header/Header';
+import { React, useState, useContext, useEffect } from 'react';
+import { CurrentUserContext } from '../../context/CurrentUserContext';
+import useForm from '../../hooks/useForm';
 
-function Profile() {
-    const [currentUser, setCurrentUser] = useState({ name: 'Анастасия', email: 'email@email.com' });
-    const [profileData, setProfileData] = useState(currentUser);
-    const [readOnly, setReadOnly] = useState(true);
-    const [profileChanged, setProfileChanged] = useState(false);
+function Profile({ onProfileUpdate, onSignOut }) {
+  const currentUser = useContext(CurrentUserContext);
+  const [readOnly, setReadOnly] = useState(true);
+  const [profileChanged, setProfileChanged] = useState(false);
+  const { values, errors, isFormValid, setValues, handleChange, formRef } = useForm();
 
-    function handleProfileChange(evt) {
-        const { value, name } = evt.target;
-        setProfileChanged(true);
-        setProfileData({ ...profileData, [name]: value });
-    };
+  useEffect(() => {
+    setValues(currentUser);
+  }, [setValues, currentUser]);
 
-    function toggleProfileReadOnly() {
-        setReadOnly(!readOnly);
-    };
+  useEffect(() => {
+    if (
+      currentUser.name === values.name &&
+      currentUser.email === values.email
+    ) {
+      return setProfileChanged(false);
+    }
+    return setProfileChanged(true);
+  }, [currentUser, values]);
 
-    function handleProfileSubmit(evt) {
-        evt.preventDefault();
-        setProfileChanged(false);
-        toggleProfileReadOnly();
-        setCurrentUser(profileData);
-    };
+  function handleProfileSubmit(evt) {
+    evt.preventDefault();
+    onProfileUpdate(values);
+    setReadOnly(true);
+    setProfileChanged(false);
+  };
 
-    function handleLogOut() {
-        setCurrentUser({})
-    };
+  function toggleProfileReadOnlyChange() {
+    setReadOnly(!readOnly);
+  };
 
-    const buttonsMarkup = () => {
-        if (readOnly) {
-            return (
-                <>
-                    <button className="profile__button profile__button_edit" onClick={toggleProfileReadOnly} type='button'>Редактировать</button>
-                    <button className="profile__button profile__button_logout" onClick={handleLogOut} type='button'>Выйти из аккаунта</button>
-                </>)
-        }
-        return (
-            <button className={`profile__button-save ${!profileChanged ? 'profile__button-save_disabled' : ''}`} disabled={!profileChanged} type='submit'>Сохранить</button>
-        )
-    };
+  function discardChanges() {
+    setReadOnly(true);
+    setValues(currentUser);
+  };
 
+  const buttonsMarkup = () => {
+    if (readOnly) {
+      return (
+        <>
+          <button className='profile__button profile__button_edit' onClick={toggleProfileReadOnlyChange} type='button'>
+            Редактировать
+          </button>
+          <button className='profile__button profile__button_logout' onClick={onSignOut} type='button'>
+            Выйти из аккаунта
+          </button>
+        </>
+      );
+    }
     return (
-        <section className='profile'>
-            <Header isLogged={true} />
-            <main className='profile__wrap'>
-                <h2 className='profile__title'>{`Привет, ${currentUser.name}!`}</h2>
-                <form className='profile__form' onSubmit={handleProfileSubmit}>
-                    <div className='profile__form-item'>
-                        <label className='profile__label'>Имя</label>
-                        <input
-                            className='profile__input'
-                            name='name' type='text'
-                            value={currentUser.name || ''}
-                            onChange={handleProfileChange}
-                            disabled={readOnly}
-                            required
-                            placeholder='Имя'
-                        />
-                    </div>
-                    <div className='profile__form-item'>
-                        <label className="profile__label">E-mail</label>
-                        <input
-                            className='profile__input'
-                            name='email' type='email'
-                            value={currentUser.email || ''}
-                            onChange={handleProfileChange}
-                            disabled={readOnly}
-                            required
-                            placeholder='E-mail'
-                        />
-                    </div>
-                </form>
-                {buttonsMarkup()}
-            </main>
-        </section>
-    )
+      <>
+        <button
+          className='profile__button-save'
+          disabled={!(profileChanged && isFormValid)}
+          type='submit'
+        >
+          Сохранить
+        </button>
+        <button
+          className='profile__button'
+          type='button'
+          onClick={discardChanges}
+        >
+          Отмена
+        </button>
+      </>
+    );
+  };
+
+  return (
+    <section className='profile'>
+      <Header isLogged={true} />
+      <main className='profile__wrap'>
+        <h2 className='profile__title'>{`Привет, ${currentUser.name}!`}</h2>
+        <form className='profile__form' onSubmit={handleProfileSubmit} noValidate ref={formRef} >
+          <div className='profile__form-item'>
+            <div className='profile__input-wrap'>
+              <label className='profile__label'>Имя</label>
+              <input
+                className={`profile__input ${errors.name ? 'error' : ''}`}
+                name='name'
+                type='text'
+                id='name'
+                value={values.name || ''}
+                onChange={handleChange}
+                disabled={readOnly}
+                required
+                placeholder='Имя'
+              />
+            </div>
+            <span className='profile__error'>{errors.name}</span>
+          </div>
+          <div className='profile__form-item'>
+            <div className='profile__input-wrap'>
+              <label className='profile__label'>E-mail</label>
+              <input
+                className={`profile__input ${errors.email ? 'error' : ''}`}
+                name='email'
+                type='email'
+                id='email'
+                value={values.email || ''}
+                onChange={handleChange}
+                disabled={readOnly}
+                required
+                placeholder='E-mail'
+              />
+            </div>
+            <span className='profile__error'>{errors.email}</span>
+          </div>
+          {buttonsMarkup()}
+        </form>
+      </main>
+    </section>
+  );
 };
 
 export default Profile;

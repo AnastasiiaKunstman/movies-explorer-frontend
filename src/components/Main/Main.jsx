@@ -5,22 +5,18 @@ import AboutProject from '../AboutProject/AboutProject';
 import Techs from '../Techs/Techs';
 import AboutMe from '../AboutMe/AboutMe';
 import Portfolio from '../Portfolio/Portfolio';
-import Footer from '../Footer/Footer';
 
-function Main() {
+function Main({ isLogged }) {
     return (
-        <>
-            <Header isLogged={false} />
-            <main>
-                <Promo />
-                <AboutProject />
-                <Techs />
-                <AboutMe />
-                <Portfolio />
-            </main>
-            <Footer />
-        </>
+        <main>
+            <Header isLogged={isLogged} />
+            <Promo />
+            <AboutProject />
+            <Techs />
+            <AboutMe />
+            <Portfolio />
+        </main>
     )
-}
+};
 
 export default Main;

@@ -9,6 +9,10 @@
     background-color: #073042;
 }
 
+.header_movies {
+    background-color: white;
+}
+
 .header__logo {
     height: 38px;
     width: 38px;

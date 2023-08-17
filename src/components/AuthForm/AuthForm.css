@@ -76,6 +76,12 @@
     border: none;
     border-radius: 3px;
     background-color: #3456F3;
+    transition: opacity .2s linear;
+}
+
+.auth__btn:disabled {
+    opacity: 0.5;
+    cursor: default;
 }
 
 .auth__question {

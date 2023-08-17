@@ -1,12 +1,13 @@
+import './NavTab.css';
 import { React, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import './NavTab.css';
 import account from '../../images/icon_accaunt.svg';
 import BurgerMenu from '../BurgerMenu/BurgerMenu';
 
 function NavTab({ isLogged }) {
   return isLogged ? MoviesMenu() : LandingMenu();
 };
+
 
 function LandingMenu() {
   return (
@@ -38,8 +39,8 @@ function MoviesMenu() {
       </div>
       <div className='nav-movies__account-btn-wrap'>
         <Link className='nav-movies__account-btn' to='/profile'>
-          <img src={account} alt="аккаунт" />
-          Аккаунт
+          <img className='nav-movies__account-btn-img' src={account} alt='аккаунт' />
+          <p className='nav-movies__account-btn-title'>Аккаунт</p>
         </Link>
       </div>
       {burgerMenu()}
