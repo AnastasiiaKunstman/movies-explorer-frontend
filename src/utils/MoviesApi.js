@@ -1,4 +1,4 @@
-const MOVIE_URL = 'https://api.nomoreparties.co/beatfilm-movies';
+import { MOVIE_URL } from "./constans";
 
 function checkResponse(res) {
     if (res.ok) {
@@ -8,5 +8,5 @@ function checkResponse(res) {
 };
 
 export const getMovies = () => {
-    return fetch(`${MOVIE_URL}`).then((res) => checkResponse(res));
+    return fetch(`${MOVIE_URL}/beatfilm-movies`).then((res) => checkResponse(res));
 };

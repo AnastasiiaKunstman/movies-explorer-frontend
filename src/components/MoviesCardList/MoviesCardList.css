@@ -7,18 +7,18 @@
 .movie-card-list__items {
     padding: 0;
     margin: 0;
-    justify-items: center;
     display: grid;
     gap: 37px 24px;
     grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-    justify-items: center;
+    justify-items: start;
+    min-height: 120px;
 }
 
 .movies-card-list__error {
     color: #FF3055;
     grid-area: 1 / 1 / 2 / 4;
     text-align: center;
-    margin: 94px 0;
+    margin: auto;
     line-height: normal;
     font-size: 22px;
 }
@@ -33,9 +33,14 @@
     }
 }
 
-@media screen and (max-width: 550px) {
+@media screen and (max-width: 650px) {
     .movie-card-list {
         padding: 26px 10px 50px;
+    }
+
+    .movie-card-list__items {
+        gap: 30px 28px;
+        justify-items: center;
     }
 }
 

@@ -3,74 +3,39 @@ import Header from '../Header/Header';
 import { React, useState, useContext, useEffect } from 'react';
 import { CurrentUserContext } from '../../context/CurrentUserContext';
 import useForm from '../../hooks/useForm';
+import { validateName, validateEmail } from '../../utils/validateInput';
 
-function Profile({ onProfileUpdate, onSignOut }) {
+function Profile({ onProfileUpdate, onSignOut, isLoading }) {
   const currentUser = useContext(CurrentUserContext);
-  const [readOnly, setReadOnly] = useState(true);
-  const [profileChanged, setProfileChanged] = useState(false);
-  const { values, errors, isFormValid, setValues, handleChange, formRef } = useForm();
+  const [isShowSaveButton, setShowSaveButton] = useState(false);
+  const { values, errors, isFormValid, setIsFormValid, setValues, handleChange, formRef } = useForm();
 
   useEffect(() => {
-    setValues(currentUser);
-  }, [setValues, currentUser]);
+    setValues((userData) => ({ ...userData, name: currentUser.name, email: currentUser.email }))
+  }, [currentUser, setValues]);
 
   useEffect(() => {
-    if (
-      currentUser.name === values.name &&
-      currentUser.email === values.email
-    ) {
-      return setProfileChanged(false);
+    if (currentUser.name === values.name && currentUser.email === values.email) {
+      setIsFormValid(false);
     }
-    return setProfileChanged(true);
-  }, [currentUser, values]);
-
-  function handleProfileSubmit(evt) {
-    evt.preventDefault();
-    onProfileUpdate(values);
-    setReadOnly(true);
-    setProfileChanged(false);
-  };
-
-  function toggleProfileReadOnlyChange() {
-    setReadOnly(!readOnly);
-  };
+  }, [currentUser, values, setIsFormValid])
 
   function discardChanges() {
-    setReadOnly(true);
     setValues(currentUser);
   };
 
-  const buttonsMarkup = () => {
-    if (readOnly) {
-      return (
-        <>
-          <button className='profile__button profile__button_edit' onClick={toggleProfileReadOnlyChange} type='button'>
-            Редактировать
-          </button>
-          <button className='profile__button profile__button_logout' onClick={onSignOut} type='button'>
-            Выйти из аккаунта
-          </button>
-        </>
-      );
+  const handleEditButtonClick = () => {
+    setShowSaveButton(true);
+  };
+
+  function handleSubmit(evt) {
+    evt.preventDefault();
+    onProfileUpdate(values);
+    if (errors && validateName(values.name).invalid && validateEmail(values.email).invalid) {
+      setShowSaveButton(true);
+    } else {
+      setShowSaveButton(false);
     }
-    return (
-      <>
-        <button
-          className='profile__button-save'
-          disabled={!(profileChanged && isFormValid)}
-          type='submit'
-        >
-          Сохранить
-        </button>
-        <button
-          className='profile__button'
-          type='button'
-          onClick={discardChanges}
-        >
-          Отмена
-        </button>
-      </>
-    );
   };
 
   return (
@@ -78,7 +43,7 @@ function Profile({ onProfileUpdate, onSignOut }) {
       <Header isLogged={true} />
       <main className='profile__wrap'>
         <h2 className='profile__title'>{`Привет, ${currentUser.name}!`}</h2>
-        <form className='profile__form' onSubmit={handleProfileSubmit} noValidate ref={formRef} >
+        <form className='profile__form' onSubmit={handleSubmit} noValidate ref={formRef} >
           <div className='profile__form-item'>
             <div className='profile__input-wrap'>
               <label className='profile__label'>Имя</label>
@@ -89,13 +54,16 @@ function Profile({ onProfileUpdate, onSignOut }) {
                 id='name'
                 value={values.name || ''}
                 onChange={handleChange}
-                disabled={readOnly}
+                onFocus={handleEditButtonClick}
+                disabled={isLoading}
                 required
                 placeholder='Имя'
+                minLength={2}
+                maxLength={30}
               />
             </div>
-            <span className='profile__error'>{errors.name}</span>
           </div>
+          <span className='profile__error'>{errors.name || validateName(values.name).message}</span>
           <div className='profile__form-item'>
             <div className='profile__input-wrap'>
               <label className='profile__label'>E-mail</label>
@@ -106,14 +74,34 @@ function Profile({ onProfileUpdate, onSignOut }) {
                 id='email'
                 value={values.email || ''}
                 onChange={handleChange}
-                disabled={readOnly}
+                onFocus={handleEditButtonClick}
+                disabled={isLoading}
                 required
                 placeholder='E-mail'
               />
             </div>
-            <span className='profile__error'>{errors.email}</span>
+            <span className='profile__error'>{errors.email || validateEmail(values.email).message}</span>
           </div>
-          {buttonsMarkup()}
+          {isShowSaveButton && !isLoading && (
+            <>
+              <button type='submit' className='profile__button-save' disabled={!isFormValid || validateName(values.name).invalid || validateEmail(values.email).invalid || (errors.email && 'error')}>
+                Сохранить
+              </button>
+              <button className='profile__button' type='button' onClick={discardChanges}>
+                Отмена
+              </button>
+            </>
+          )}
+          {!isShowSaveButton && !isLoading && (
+            <>
+              <button type='button' className='profile__button profile__button_edit' onClick={handleEditButtonClick} >
+                Редактировать
+              </button>
+              <button type='button' className='profile__button profile__button_logout' onClick={onSignOut} >
+                Выйти из аккаунта
+              </button>
+            </>
+          )}
         </form>
       </main>
     </section>

@@ -3,16 +3,13 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import useForm from '../../hooks/useForm';
 import useMoviesFilter from '../../hooks/useMoviesFilter';
-import { getMovies } from '../../utils/MoviesApi';
 import Checkbox from '../Checkbox/Checkbox';
-import { SEARCH_ERROR } from '../../utils/constans';
 
-function SearchForm({ setMovies, movies, setFilteredMovies, isMoviesSearched, setIsMoviesSearched, isSavedMoviesSearched, setIsSavedMoviesSearched, setIsLoading }) {
+function SearchForm({ setMovies, movies, setFilteredMovies, isMoviesSearched, setIsMoviesSearched, isSavedMoviesSearched, setIsSavedMoviesSearched, errorMessages, showMovieSearch }) {
     const location = useLocation();
     const [isChecked, setIsChecked] = useState(false);
-    const { values, handleChange, errors, isFormValid, formRef } = useForm();
+    const { values, handleChange, isFormValid, errors, formRef } = useForm();
     const { filteredMovies } = useMoviesFilter(movies, values.film, isChecked);
-    const [responseError, setResponseError] = useState('');
 
     useEffect(() => {
         if (location.pathname === '/saved-movies' && isSavedMoviesSearched) {
@@ -49,18 +46,6 @@ function SearchForm({ setMovies, movies, setFilteredMovies, isMoviesSearched, se
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filteredMovies, setFilteredMovies, location]);
 
-    const showMovieSearch = () => {
-        setIsLoading(true);
-
-        getMovies()
-            .then((res) => {
-                setResponseError('');
-                setMovies(res);
-                setIsMoviesSearched(true);
-            })
-            .catch(() => setResponseError(SEARCH_ERROR))
-            .finally(() => setIsLoading(false));
-    };
 
     function showSavedMovieSearch() {
         setMovies((savedMovies) => [...savedMovies]);
@@ -71,9 +56,9 @@ function SearchForm({ setMovies, movies, setFilteredMovies, isMoviesSearched, se
         evt.preventDefault();
         if (location.pathname === '/movies') {
             showMovieSearch();
+            setIsMoviesSearched(true);
             return;
         }
-
         showSavedMovieSearch();
     };
 
@@ -81,6 +66,7 @@ function SearchForm({ setMovies, movies, setFilteredMovies, isMoviesSearched, se
         if (isFormValid && location.pathname === '/movies') {
             setIsChecked(!isChecked);
             showMovieSearch();
+            setIsMoviesSearched(true);
         } else if (movies.length !== 0) {
             setIsChecked(!isChecked);
             showSavedMovieSearch();
@@ -96,22 +82,19 @@ function SearchForm({ setMovies, movies, setFilteredMovies, isMoviesSearched, se
                 <div className='search__input-wrap'>
                     <input
                         className='search__input'
-                        id='film'
+                        id='input'
                         name='film'
                         type='text'
                         placeholder='Фильм'
                         required
                         value={values.film || ''}
                         onChange={handleChange}
-                        responseError={responseError}
                     />
                     <button className='search__button' type='submit' disabled={!isFormValid}>Найти</button>
                 </div>
                 <Checkbox isChecked={isChecked} toggleCheckbox={toggleCheckbox} />
             </form>
-            <span className={`search__input-error ${errors.film && 'search__input-error_visible'}`}>
-                Нужно ввести ключевое слово
-            </span>
+            <span className={`search__input-error ${errors.film && 'search__input-error_visible'}`}>{errorMessages.inputError}</span>
             <hr />
         </section>
     )

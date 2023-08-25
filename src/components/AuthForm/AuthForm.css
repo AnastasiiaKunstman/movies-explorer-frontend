@@ -119,8 +119,10 @@
     }
 
     .auth__error {
-        max-width: 320px;
+        max-width: 260px;
         box-sizing: border-box;
+        font-size: 8px;
+        line-height: 10px;
     }
 
     .auth__input {

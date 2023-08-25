@@ -12,10 +12,11 @@ import Profile from '../Profile/Profile';
 import NotFoundError from '../NotFoundError/NotFoundError';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import InfoTooltip from '../InfoTooltip/InfoTooltip';
-import { errorMessages, successMessages } from '../../utils/constans';
+import { errorMessages, successMessages, JWT_TOKEN } from '../../utils/constans';
 
 import api from '../../utils/MainApi';
 import auth from '../../utils/MainAuth';
+import { getMovies } from '../../utils/MoviesApi';
 
 function App() {
   const [isLogged, setIsLogged] = useState(null);
@@ -59,7 +60,7 @@ function App() {
   function checkToken() {
     const path = location.pathname;
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem(JWT_TOKEN);
 
       if (token) {
         api.getUserInfo()
@@ -118,6 +119,7 @@ function App() {
           setFilteredMovies([]);
           localStorage.clear();
           navigate('/');
+          handleSuccessMessage(successMessages.logout)
         })
         .catch(err => console.log(err))
     }
@@ -132,6 +134,17 @@ function App() {
         handleSuccessMessage(successMessages.editProfile);
       })
       .catch(() => handleErrorMessage(errorMessages.emailExists))
+  };
+
+  //Получить фильмы из БД
+  function showMovieSearch() {
+    setIsLoading(true);
+    getMovies()
+      .then((res) => {
+        setMovies(res);
+      })
+      .catch(() => handleErrorMessage(errorMessages.searchError))
+      .finally(() => setIsLoading(false))
   };
 
   // Сохранить фильм
@@ -155,6 +168,7 @@ function App() {
           savedMovies.filter((savedMovie) => savedMovie._id !== res._id),
         );
         setIsActionPending(false);
+        handleSuccessMessage(successMessages.remuveMovie);
       })
       .catch((err) => {
         console.log(err);
@@ -168,7 +182,6 @@ function App() {
 
       return;
     }
-
     const movieToDelete = savedMovies.find((savedMovie) => savedMovie.movieId === movieId);
     handleDeleteMovie(movieToDelete._id);
   };
@@ -178,12 +191,10 @@ function App() {
       api.getSavedMovies()
         .then((res) => {
           setSavedMovies(res);
-
           const likedMoviesAndUndef = filteredMovies.map((filteredMovie) => {
             return res.find((savedMovie) => savedMovie.movieId === filteredMovie.id);
           });
           const likedMovies = likedMoviesAndUndef.filter((item) => item !== undefined);
-
           setLikedMovies(likedMovies);
         })
         .catch((err) => console.log(err));
@@ -219,6 +230,8 @@ function App() {
                   savedMovies={savedMovies}
                   deleteMovie={deleteSavedMovie}
                   handleSaveMovie={handleSaveMovie}
+                  errorMessages={errorMessages}
+                  showMovieSearch={showMovieSearch}
                 />
               }
             />
@@ -234,6 +247,7 @@ function App() {
                   setMovies={setSavedMovies}
                   savedMovies={savedMovies}
                   deleteMovie={deleteSavedMovie}
+                  errorMessages={errorMessages}
                 />
               }
             />
@@ -243,14 +257,15 @@ function App() {
                 <ProtectedRoute
                   element={Profile}
                   isLogged={isLogged}
+                  isLoading={isLoading}
                   onProfileUpdate={handleUpadteUserInfo}
                   onSignOut={onSignOut}
                 />
               }
             />
-            <Route path='/*' element={<ProtectedRoute element={NotFoundError} />} />
             <Route path='/signin' element={isLogged ? <Navigate to='/' /> : <Login onLogin={onLogin} />} />
             <Route path='/signup' element={isLogged ? <Navigate to='/' /> : <Register onRegister={onRegister} />} />
+            <Route path='/*' element={<NotFoundError />} />
           </Routes>
           <InfoTooltip
             isOpen={isTooltipOpen}

@@ -38,7 +38,7 @@
 .profile__form-item:last-of-type {
     border-bottom: none;
     margin-bottom: 204px;
-    padding: 17px 0 0;
+    padding: 5px 0 0;
 }
 
 
@@ -62,6 +62,7 @@
     font-size: 10px;
     line-height: 12px;
     color: #FF3055;
+    min-height: 12px;
 }
 
 .profile__input:hover {
@@ -85,6 +86,11 @@
 .profile__button_edit {
     margin-bottom: 16px;
     color: #000;
+}
+
+.profile__button_edit:disabled {
+    opacity: 0.5;
+    cursor: default;
 }
 
 .profile__button_logout {
@@ -140,12 +146,20 @@
 }
 
 @media screen and (max-width: 480px) {
+    .profile__title {
+        margin: 0 0 80px;
+    }
+
     .profile__wrap {
         padding: 70px 0 0;
     }
 
     .profile__form {
         width: 260px;
+    }
+
+    .profile__form-item:last-of-type {
+        margin-bottom: 335px;
     }
 
     .profile__button {

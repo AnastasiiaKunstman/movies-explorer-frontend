@@ -1,8 +1,9 @@
 import './MoviesCard.css';
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { formatMovieDuration } from '../../utils/constans';
 
-function MoviesCard ({
+function MoviesCard({
   image,
   duration,
   nameRU,
@@ -18,7 +19,9 @@ function MoviesCard ({
   likedMovies,
   setIsActionPending,
   isActionPending,
-  _id, }) {
+  _id,
+  link
+}) {
 
   const movieData = {
     country,
@@ -33,10 +36,9 @@ function MoviesCard ({
     nameEN,
     _id,
   };
-
+  const location = useLocation();
   const isMovieLiked = likedMovies?.some((likedMovie) => likedMovie.movieId === movieData.movieId);
   const [isLiked, setIsLiked] = useState(false);
-  const location = useLocation();
 
   useEffect(() => {
     setIsLiked(isMovieLiked);
@@ -58,43 +60,36 @@ function MoviesCard ({
     }
   };
 
-  const imgUrl = image.toString().includes('https://api.nomoreparties.co')
-    ? image
-    : `https://api.nomoreparties.co${image.url}`;
-
-
-  function formatMovieDuration(duration) {
-    if (duration >= 60) {
-      const minutes = duration % 60;
-      return `${Math.floor(duration / 60)}ч ${minutes > 0 ? minutes + 'м' : ''}`;
-    }
-    return `${duration}м`;
-  };
-
-  const movieDuration = formatMovieDuration(duration);
-
   return (
     <li className='movie-card'>
       <a href={trailerLink} target='_blanck'>
-        <img className='movie-card__image' src={imgUrl} alt={nameRU} />
+        <img className='movie-card__image' src={link} alt={nameRU} />
       </a>
       <div className='movie-card__desc'>
         <h3 className='movie-card__title'>{nameRU}</h3>
-        {location.pathname === '/movies' ? (
+        {location.pathname === '/saved-movies' && (
           <button
-            onClick={handleLikeClick}
-            className={`movie-card__btn movie-card__btn_save ${isLiked ? 'movie-card__btn movie-card__btn_save_active' : ''}`}
             type='button'
-            aria-label='Лайк'></button>
-        ) : (
-          <button
-            onClick={() => deleteMovie(movieData._id)}
             className='movie-card__btn movie-card__btn_remove'
+            onClick={() => deleteMovie(movieData._id)}
+          />
+        )}
+        {location.pathname === '/movies' && isLiked && (
+          <button
             type='button'
-            aria-label='Кнопка удаления'></button>
+            className='movie-card__btn movie-card__btn_save_active'
+            onClick={handleLikeClick}
+          />
+        )}
+        {location.pathname === '/movies' && !isLiked && (
+          <button
+            type='button'
+            className='movie-card__btn movie-card__btn_save'
+            onClick={handleLikeClick}
+          />
         )}
       </div>
-      <p className='movie-card__duration'>{movieDuration}</p>
+      <p className='movie-card__duration'>{formatMovieDuration(duration)}</p>
     </li>
   );
 };

@@ -1,10 +1,11 @@
 import './MoviesCardList.css';
 import MoviesCard from '../MoviesCard/MoviesCard';
+import { MOVIE_URL, errorMessages } from '../../utils/constans';
 
 function MoviesCardList({
   movies,
   searchError,
-  addCards,
+  moviesRenderCounter,
   handleSaveMovie,
   deleteMovie,
   likedMovies,
@@ -15,17 +16,23 @@ function MoviesCardList({
   isSavedMoviesSearched,
 }) {
 
+  function getImageLink(movie) {
+    return movie.movieId
+      ? movie.image
+      : MOVIE_URL + movie.image.url
+  };
+
   return (
     <section className='movie-card-list'>
       <ul className='movie-card-list__items'>
           {searchError ? (
-            <p className='movies-card-list__error'>{searchError}</p>
+            <p className='movies-card-list__error'>{errorMessages.searchError}</p>
           ) : movies?.length === 0 ? (
             <p className='movies-card-list__error'>
-              {isMoviesSearched || isSavedMoviesSearched ? 'Ничего не найдено' : ''}
+              {isMoviesSearched || isSavedMoviesSearched ? errorMessages.notFound : ''}
             </p>
           ) : (
-            movies?.slice(0, addCards).map((movie) => (
+            movies?.slice(0, moviesRenderCounter).map((movie) => (
               <MoviesCard
                 isActionPending={isActionPending}
                 setIsActionPending={setIsActionPending}
@@ -33,6 +40,7 @@ function MoviesCardList({
                 likedMovies={likedMovies}
                 key={movie.description}
                 {...movie}
+                link={getImageLink(movie)}
                 deleteMovie={deleteMovie}
                 handleSaveMovie={handleSaveMovie}
               />

@@ -2,10 +2,11 @@ import './AuthForm.css';
 import logo from '../../images/logo.svg'
 import { Link } from 'react-router-dom';
 import useForm from '../../hooks/useForm';
+import { validateName, validateEmail } from '../../utils/validateInput';
 
 function AuthForm({ type, text, onSubmitForm }) {
 
-    const { values, errors, isFormValid, handleChange, resetForm, formRef } = useForm();
+    const { values, errors, isFormValid, handleChange, formRef } = useForm();
 
     const signupForm = () => {
         if (type === 'signup') {
@@ -22,7 +23,7 @@ function AuthForm({ type, text, onSubmitForm }) {
                         minLength={2}
                         maxLength={30}
                     />
-                    <span className='auth__error'>{errors.name}</span>
+                    <span className='auth__error'>{errors.name || validateName(values.name).message}</span>
                 </div>
             )
         }
@@ -31,7 +32,6 @@ function AuthForm({ type, text, onSubmitForm }) {
     function handleSubmit(evt) {
         evt.preventDefault();
         onSubmitForm(values);
-        resetForm();
     };
 
     return (
@@ -52,7 +52,7 @@ function AuthForm({ type, text, onSubmitForm }) {
                         onChange={handleChange}
                         required
                     />
-                    <span className='auth__error'>{errors.email}</span>
+                    <span className='auth__error'>{errors.email || validateEmail(values.email).message}</span>
                 </div>
                 <div className='auth__form-item'>
                     <label className='auth__label'>Пароль</label>
@@ -69,7 +69,7 @@ function AuthForm({ type, text, onSubmitForm }) {
                     <span className='auth__error'>{errors.password}</span>
                 </div>
                 <div className='auth__buttons'>
-                    <button className='auth__btn' type='submit' disabled={!isFormValid}>{text.buttonText}</button>
+                    <button className='auth__btn' type='submit' disabled={!isFormValid || validateEmail(values.email).invalid}>{text.buttonText}</button>
                     <p className='auth__question'>{text.questText}
                         {
                             type === 'signup'

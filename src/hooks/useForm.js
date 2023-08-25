@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
-import { regExp } from '../utils/constans';
+import { regExpName } from '../utils/constans';
 
 function useForm() {
   const formRef = useRef(null);
@@ -16,10 +16,9 @@ function useForm() {
     const { name, value } = evt.target;
 
     const isName = name === 'name';
-    const isNameValid = isName ? regExp.test(value) : true;
+    const isNameValid = isName ? regExpName.test(value) : true;
     const errorMessage = !isNameValid
-      ? evt.target.validationMessage ||
-      'Имя может содержать только латиницу, кириллицу, пробел или дефис.'
+      ? evt.target.validationMessage
       : evt.target.validationMessage;
 
     setValues({ ...values, [name]: value });
