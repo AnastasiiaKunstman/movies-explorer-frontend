@@ -9,7 +9,7 @@ import Footer from '../Footer/Footer';
 import useScreenWidth from '../../hooks/useScreenWidth';
 import useCountMovies from '../../hooks/useCounMovie';
 
-const Movies = ({ isLoading, movies, setMovies, filteredMovies, handleSaveMovie, deleteMovie, setFilteredMovies, likedMovies, setIsActionPending, isActionPending, errorMessages, showMovieSearch }) => {
+const Movies = ({ isLoading, movies, setMovies, deleteMovie, handleSaveMovie, filteredMovies, savedMovies, setFilteredMovies, likedMovies, errorMessages, showMovieSearch }) => {
     const [responseError, setResponseError] = useState('');
     const [isMoviesSearched, setIsMoviesSearched] = useState(false);
     const orientation = useScreenWidth();
@@ -33,16 +33,16 @@ const Movies = ({ isLoading, movies, setMovies, filteredMovies, handleSaveMovie,
             ) : (
                 <>
                     <MoviesCardList
-                        deleteMovie={deleteMovie}
-                        handleSaveMovie={handleSaveMovie}
                         responseError={responseError}
                         isMoviesSearched={isMoviesSearched}
-                        isActionPending={isActionPending}
-                        setIsActionPending={setIsActionPending}
                         likedMovies={likedMovies}
                         movies={filteredMovies}
                         setMovies={setMovies}
                         moviesRenderCounter={moviesRenderCounter}
+                        isSavedMoviesPage={false}
+                        savedMovies={savedMovies}
+                        handleSaveMovie={handleSaveMovie}
+                        deleteMovie={deleteMovie}
                     />
                     <div className='movies__wrapper'>
                         {filteredMovies?.length > moviesRenderCounter && (

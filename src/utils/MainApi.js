@@ -60,7 +60,7 @@ class MainApi {
                 image: `https://api.nomoreparties.co/${movieData.image.url}`,
                 trailerLink: movieData.trailerLink,
                 thumbnail: `https://api.nomoreparties.co/${movieData.image.formats.thumbnail.url}`,
-                movieId: movieData.movieId,
+                movieId: movieData.id,
                 nameRU: movieData.nameRU,
                 nameEN: movieData.nameEN,
             })
@@ -70,8 +70,8 @@ class MainApi {
 
 
     //Удалить фильм
-    deleteMovie(id) {
-        return fetch(`${this._baseUrl}/movies/${id}`, {
+    deleteMovie(movieId) {
+        return fetch(`${this._baseUrl}/movies/${movieId}`, {
             method: 'DELETE',
             headers: this._headers,
             credentials: 'include',

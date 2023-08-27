@@ -33,7 +33,6 @@ function App() {
   const [savedMovies, setSavedMovies] = useState([]);
   const [filteredMovies, setFilteredMovies] = useState([]);
   const [filteredSavedMovies, setFilteredSavedMovies] = useState([]);
-  const [isActionPending, setIsActionPending] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -68,7 +67,7 @@ function App() {
             setCurrentUser(userData);
             setIsLogged(true);
             if (path !== '/signin') {
-              navigate(path);
+              navigate(path, { replace: true });
             }
             api.getSavedMovies()
               .then((savedMoviesData) => {
@@ -100,7 +99,7 @@ function App() {
         handleSuccessMessage(
           location.pathname === '/signup' ? successMessages.register : successMessages.login,
         );
-        navigate('/movies');
+        navigate('/movies', { replace: true });
       })
       .catch(() => {
         setIsLogged(false);
@@ -118,7 +117,7 @@ function App() {
           setSavedMovies([]);
           setFilteredMovies([]);
           localStorage.clear();
-          navigate('/');
+          navigate('/', { replace: true });
           handleSuccessMessage(successMessages.logout)
         })
         .catch(err => console.log(err))
@@ -147,43 +146,24 @@ function App() {
       .finally(() => setIsLoading(false))
   };
 
-  // Сохранить фильм
-  function handleSaveMovie(movieData) {
-    api.saveMovie(movieData)
-      .then((res) => {
-        setSavedMovies([...savedMovies, res]);
-        setIsActionPending(false);
+  //Сохранить фильм
+  function handleSaveMovie(movie) {
+    api.saveMovie(movie)
+      .then(movie => {
+        setSavedMovies([ movie, ...savedMovies])
+        handleSuccessMessage(successMessages.saveMovie)
       })
-      .catch((err) => {
-        console.log(err);
-        setIsActionPending(false);
-      });
+      .catch(err => console.log(err))
   };
 
   // Удалить фильм
-  function handleDeleteMovie(id) {
-    api.deleteMovie(id)
-      .then((res) => {
-        setSavedMovies((savedMovies) =>
-          savedMovies.filter((savedMovie) => savedMovie._id !== res._id),
-        );
-        setIsActionPending(false);
-        handleSuccessMessage(successMessages.remuveMovie);
+  function handleDeleteMovie(movie) {
+    api.deleteMovie(movie._id)
+      .then(() => {
+        setSavedMovies(prevMovies => prevMovies.filter(item => item._id !== movie._id));
+        handleSuccessMessage(successMessages.remuveMovie)
       })
-      .catch((err) => {
-        console.log(err);
-        setIsActionPending(false);
-      });
-  };
-
-  const deleteSavedMovie = (movieId) => {
-    if (movieId.length === 24) {
-      handleDeleteMovie(movieId);
-
-      return;
-    }
-    const movieToDelete = savedMovies.find((savedMovie) => savedMovie.movieId === movieId);
-    handleDeleteMovie(movieToDelete._id);
+      .catch(err => console.log(err))
   };
 
   function getSavedMovies() {
@@ -193,7 +173,7 @@ function App() {
           setSavedMovies(res);
           const likedMoviesAndUndef = filteredMovies.map((filteredMovie) => {
             return res.find((savedMovie) => savedMovie.movieId === filteredMovie.id);
-          });
+          })
           const likedMovies = likedMoviesAndUndef.filter((item) => item !== undefined);
           setLikedMovies(likedMovies);
         })
@@ -220,15 +200,13 @@ function App() {
                   isLogged={isLogged}
                   isLoading={isLoading}
                   setIsLoading={setIsLoading}
-                  isActionPending={isActionPending}
-                  setIsActionPending={setIsActionPending}
                   filteredMovies={filteredMovies}
                   setMovies={setMovies}
                   setFilteredMovies={setFilteredMovies}
                   movies={movies}
                   likedMovies={likedMovies}
                   savedMovies={savedMovies}
-                  deleteMovie={deleteSavedMovie}
+                  deleteMovie={handleDeleteMovie}
                   handleSaveMovie={handleSaveMovie}
                   errorMessages={errorMessages}
                   showMovieSearch={showMovieSearch}
@@ -246,7 +224,7 @@ function App() {
                   setFilteredSavedMovies={setFilteredSavedMovies}
                   setMovies={setSavedMovies}
                   savedMovies={savedMovies}
-                  deleteMovie={deleteSavedMovie}
+                  deleteMovie={handleDeleteMovie}
                   errorMessages={errorMessages}
                 />
               }
@@ -265,7 +243,7 @@ function App() {
             />
             <Route path='/signin' element={isLogged ? <Navigate to='/' /> : <Login onLogin={onLogin} />} />
             <Route path='/signup' element={isLogged ? <Navigate to='/' /> : <Register onRegister={onRegister} />} />
-            <Route path='/*' element={<NotFoundError />} />
+            <Route path='*' element={<NotFoundError />} />
           </Routes>
           <InfoTooltip
             isOpen={isTooltipOpen}

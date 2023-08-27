@@ -37,3 +37,9 @@ export const formatMovieDuration = (duration) => {
     }
     return `${duration}м`;
 };
+
+export function checkSavedMovie(movies, movie) {
+    return movies?.find((item) => {
+        return item.movieId === movie.id;
+    });
+};

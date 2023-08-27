@@ -25,6 +25,7 @@ function SavedMovies({ savedMovies, setMovies, setIsLoading, deleteMovie, filter
                     movies={filteredSavedMovies}
                     isSavedMoviesSearched={isSavedMoviesSearched}
                     deleteMovie={deleteMovie}
+                    isSavedMoviesPage={true}
                 />
                 <div className='movies__wrapper' />
             </section>
