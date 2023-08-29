@@ -1,4 +1,6 @@
 .movie-card {
+    max-width: 364px;
+    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -9,7 +11,11 @@
 
 .movie-card__image {
     width: 100%;
+    height: 203px;
+    display: block;
     object-fit: cover;
+    object-position: center;
+    border-radius: 6px 6px 0 0;
 }
 
 .movie-card__desc {
@@ -17,7 +23,6 @@
     justify-content: space-between;
     padding: 16px 16px 17px;
 }
-
 
 .movie-card__title {
     max-width: 290px;
@@ -54,7 +59,11 @@
     opacity: 0.7;
 }
 
-.movie-card__btn_saved {
+.movie-card__btn_save {
+    background: url('../../images/heart.svg') no-repeat center;
+}
+
+.movie-card__btn_save_active {
     background: url('../../images/heart_red.svg') no-repeat center;
 }
 
@@ -65,10 +74,6 @@
 
 .movie-card:hover .movie-card__btn_remove {
     visibility: visible;
-}
-
-.movie-card__btn_save {
-    background: url('../../images/heart.svg') no-repeat center;
 }
 
 @media screen and (max-width: 890px) {

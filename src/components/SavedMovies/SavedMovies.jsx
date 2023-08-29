@@ -1,8 +1,36 @@
-import Movies from "../Movies/Movies";
+import './SavedMovies.css';
+import { useState } from 'react';
+import Header from '../Header/Header';
+import SearchForm from '../SearchForm/SearchForm';
+import MoviesCardList from '../MoviesCardList/MoviesCardList';
+import Footer from '../Footer/Footer';
 
-function SavedMovies({ movies, isSavedMoviesPage }) {
+function SavedMovies({ savedMovies, setMovies, setIsLoading, deleteMovie, filteredSavedMovies, setFilteredSavedMovies, errorMessages }) {
+    const [isSavedMoviesSearched, setIsSavedMoviesSearched] = useState(false);
+
     return (
-        <Movies movies={movies} isSavedMoviesPage={isSavedMoviesPage} />
+        <>
+            <section className='saved-movies'>
+                <Header isLogged={true} />
+                <SearchForm
+                    setMovies={setMovies}
+                    movies={savedMovies}
+                    setFilteredMovies={setFilteredSavedMovies}
+                    setIsLoading={setIsLoading}
+                    isSavedMoviesSearched={isSavedMoviesSearched}
+                    setIsSavedMoviesSearched={setIsSavedMoviesSearched}
+                    errorMessages={errorMessages}
+                />
+                <MoviesCardList
+                    movies={filteredSavedMovies}
+                    isSavedMoviesSearched={isSavedMoviesSearched}
+                    deleteMovie={deleteMovie}
+                    isSavedMoviesPage={true}
+                />
+                <div className='movies__wrapper' />
+            </section>
+            <Footer />
+        </>
     );
 };
 

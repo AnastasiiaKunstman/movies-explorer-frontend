@@ -1,9 +1,9 @@
 import './ShowMore.css';
 
-function ShowMore({ showMore }) {
+function ShowMore({ onClick }) {
     return (
-        <div className={!showMore ? 'show-more__hide' : 'show-more'}>
-            <button className='show-more__btn' type='button'>Ещё</button>
+        <div className='show-more'>
+            <button className='show-more__btn' type='button' onClick={onClick}>Ещё</button>
         </div>
     )
 };
