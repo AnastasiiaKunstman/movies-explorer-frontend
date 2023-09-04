@@ -1,8 +1,11 @@
-# Movies
-*(movies-explorer-frontend)*
+# Movies *(movies-explorer-frontend)*
 
 Frontend дипломного проекта [Я.Практикум](https://practicum.yandex.ru) - cервиса, в котором можно найти фильмы по запросу и сохранить их в личном кабинете.  
+
 Главная страница сайта - это лендинг-портфолио с информацией о проекте и его разработчике. С нее можно перейти на сервис поиска фильмов.
+
+
+![Portfolio](./src/images/scrin1.JPG)
 
 
 ![Movies](./src/images/scrin.JPG)
