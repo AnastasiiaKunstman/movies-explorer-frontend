@@ -16,14 +16,15 @@ function AuthForm({ type, text, onSubmitForm }) {
                     <input
                         className={`auth__input ${errors.name ? 'error' : ''}`}
                         name='name'
-                        type='name'
+                        id='name'
+                        type='text'
                         value={values.name || ''}
                         onChange={handleChange}
                         required
                         minLength={2}
                         maxLength={30}
                     />
-                    <span className='auth__error'>{errors.name || validateName(values.name).message}</span>
+                    <span className='auth__error'>{errors.name}</span>
                 </div>
             )
         }
@@ -36,7 +37,7 @@ function AuthForm({ type, text, onSubmitForm }) {
 
     return (
         <>
-            <form className='auth' onSubmit={handleSubmit} noValidate ref={formRef}>
+            <form className='auth form' onSubmit={handleSubmit} noValidate ref={formRef} >
                 <Link to='/'>
                     <img className='auth__logo' src={logo} alt='Логотип' />
                 </Link>
@@ -68,6 +69,7 @@ function AuthForm({ type, text, onSubmitForm }) {
                     />
                     <span className='auth__error'>{errors.password}</span>
                 </div>
+            
                 <div className='auth__buttons'>
                     <button className='auth__btn' type='submit' disabled={!isFormValid || validateEmail(values.email).invalid}>{text.buttonText}</button>
                     <p className='auth__question'>{text.questText}

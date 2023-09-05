@@ -18,7 +18,8 @@ function useForm() {
     const isName = name === 'name';
     const isNameValid = isName ? regExpName.test(value) : true;
     const errorMessage = !isNameValid
-      ? evt.target.validationMessage
+      ? evt.target.validationMessage ||
+      'Имя может содержать только латиницу, кириллицу, пробел или дефис.'
       : evt.target.validationMessage;
 
     setValues({ ...values, [name]: value });
